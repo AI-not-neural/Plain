@@ -4,7 +4,7 @@ function()
     // https://developer.mozilla.org/ru/docs/Web/Events
     var events = [
                     ['click', 'onClick'], ['wheel', 'onWheel'], ['mousedown', 'onMouseDown'], ['keydown', 'onKeyDown'],
-                    ['contextmenu', 'rightClick']
+                    ['contextmenu', 'rightClick'], ['mousemove', 'onMouseMove']
                     ];
 
     for (var event of events)
@@ -25,7 +25,7 @@ function(e)
 AI_class.prototype.onWheel =
 function()
 {
-    this.draw();
+    // this.draw();
 };
 
 AI_class.prototype.onMouseDown =
@@ -97,6 +97,21 @@ function(e)
         this.draw();
     }
 };
+
+AI_class.prototype.onMouseMove =
+function(e)
+{
+    if (typeof(this.weights[this.my - 1]) == 'undefined')
+    {
+        return;
+    }
+
+    var [x, y] = this.getTruthCoordinated(e.clientX, e.clientY);
+
+    var w = this.weights[y][x];
+    loadProgressDiv.textContent = "Error: " + w.E.toPrecision(4) + "    P1: " + w.P[0].toPrecision(4) + "    P2: " + w.P[1].toPrecision(4);
+};
+
 
 AI_class.prototype.rightClick =
 function(e)

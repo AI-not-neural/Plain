@@ -5,7 +5,7 @@ function (x, y)
     var tx    = x - cRect.left;
     var ty    = y - cRect.top;
 
-    return [tx, ty];
+    return [parseInt(tx), parseInt(ty)];
 };
 
 AI_class.prototype.cleanCanvas =
@@ -14,20 +14,6 @@ function()
     // Зачерняем фон
     CTX.fillStyle = "#000000";
     CTX.fillRect(0, 0, main_canvas.width, main_canvas.height);
-};
-
-AI_class.prototype.drawAllPoints =
-function()
-{
-    for (var pI = 0; pI < this.points.length; pI++)
-    {
-        var ps    = this.points[pI];
-        var color = this.points_color[pI];
-        for (var p of ps)
-        {
-	        this.drawPoint(p.x, p.y, color);
-        }
-    }
 };
 
 AI_class.prototype.draw =
@@ -44,7 +30,20 @@ function()
     this.drawAllPoints();
 
     loadProgressDiv.textContent = "Готово";
+};
 
+AI_class.prototype.drawAllPoints =
+function()
+{
+    for (var pI = 0; pI < this.points.length; pI++)
+    {
+        var ps    = this.points[pI];
+        var color = this.points_color[pI];
+        for (var p of ps)
+        {
+	        this.drawPoint(p.x, p.y, color);
+        }
+    }
 };
 
 AI_class.prototype.drawPoint =
@@ -80,6 +79,7 @@ function()
         data[i]     = obj.r;     // red
         data[i + 1] = obj.g; // green
         data[i + 2] = obj.b; // blue
+        data[i + 3] = 0xFF;
 
         x++;
         if (x >= this.mx)

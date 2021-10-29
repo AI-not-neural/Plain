@@ -1,3 +1,19 @@
+// Функция вычисления соответствия
+function AIFunc(p1, p2, x, y)
+{
+	var d1 = getDistance(p1.x - x, p1.y - y);
+	var d2 = getDistance(p2.x - x, p2.y - y);
+
+	var k1 = d1 / (d1 + d2 + 1e-18);	//  + 1e-18 - это чтобы никогда не было деления на ноль
+	var k2 = d2 / (d1 + d2 + 1e-18);
+
+	var k1 = k1 / (k1 + k2);
+	var k2 = k2 / (k1 + k2);
+	var Er = 1 - 1/(k1 + k2);
+
+	return [k1, k2, Er];
+}
+
 // Градусы в радианы
 function toRadian(val)
 {
@@ -27,12 +43,12 @@ var AI_class = function()
 
 	// FF - полная непрозрачность. Альфа-канал самый последний
 	// this.points_color = ['#00FF00', '#0000FF', '#FF0000', '#FFFF00', '#00AAFF', '#FF00FF'];
-	this.points_color = ['#00FF00', '#0000FF'];
+	this.points_color = ['#0000FFFF', '#00FF00FF'];
 
-	for (var i = 0; i < 6; i++)
+	for (var i = 0; i < 2; i++)
 		this.points.push([]);
 
-	this.draw();
+	this.calc();
 };
 
 AI_class.prototype.calc =
@@ -84,21 +100,49 @@ function(x, y)
 	if (typeof(this.weights[y]) == 'undefined')
 		this.weights[y] = new Array(this.mx);
 
-	var P = [];
-	var E = [];
+	var P1 = [];
+	var P2 = [];
+	var E  = [];
 
 
 	for (var p1 of this.points[0])
 	for (var p2 of this.points[1])
 	{
-		getDistance(p1.x - p2.x, p1.y - p2.y);
+		var [k1, k2, Er] = AIFunc(p1, p2, x, y);
+
+		P1.push(k1);
+		P2.push(k2);
+		E .push(Er);
 	}
 
-	var rc = 0xFF;
-	var gc = 0xFF;
-	var bc = 0xFF;
+	var SP1 = 0;
+	var SP2 = 0;
+	var SE  = 0;
+	for (var i = 0; i < P1.length; i++)
+	{
+		SP1 += P1[i];
+		SP2 += P2[i];
+		SE  += E [i];
+	}
 
-	var obj = {E: 0, P: [0, 0], r: rc, g: gc, b: bc};
+	if (P1.length > 0)
+	{
+		SP1 /= P1.length;
+		SP2 /= P2.length;
+		SE  /= E .length;
+	}
+	else
+	{
+		SP1 = 0.5;
+		SP2 = 0.5;
+		SE  = 1.0;
+	}
+
+	var rc = 0xFF * SE;
+	var gc = 0xFF * SP1;
+	var bc = 0xFF * SP2;
+
+	var obj = {E: SE, P: [SP1, SP2], r: rc, g: gc, b: bc};
 	this.weights[y][x] = obj;
 };
 
