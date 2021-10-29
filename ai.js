@@ -4,12 +4,20 @@ function AIFunc(p1, p2, x, y)
 	var d1 = getDistance(p1.x - x, p1.y - y);
 	var d2 = getDistance(p2.x - x, p2.y - y);
 
+	var D  = getDistance(p2.x - p1.x, p2.y - p1.y);
+
 	var k1 = d1 / (d1 + d2 + 1e-18);	//  + 1e-18 - это чтобы никогда не было деления на ноль
 	var k2 = d2 / (d1 + d2 + 1e-18);
 
 	var k1 = k1 / (k1 + k2);
 	var k2 = k2 / (k1 + k2);
-	var Er = 1 - 1/(k1 + k2);
+	// var Er = 1 - 1/(k1 + k2);
+	var Er = 0.0;
+	if (d1 + d2 > D)
+	{
+		var dk = D / (d1 + d2 + 1e-18);
+		Er = 1 - dk * dk;
+	}
 
 	return [k1, k2, Er];
 }
