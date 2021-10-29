@@ -6,7 +6,7 @@ main_canvas.focus();
 main_canvas.width  = 1000;
 main_canvas.height = 1000;
 
-var CTX = main_canvas.getContext("2d");
+var CTX = main_canvas.getContext("2d"); // , { alpha: false }
 
 var loadProgressDiv = document.getElementById("loadProgress");
 var loadProgressInt = 0;

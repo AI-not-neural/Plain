@@ -4,7 +4,7 @@ function toRadian(val)
 	return val * 2*Math.PI / 360;
 }
 
-// Эта функция возвращает дистанцию до объекта с учётом нужной метрики пространства
+// Эта функция возвращает дистанцию до объекта
 function getDistance(x, y)
 {
 	// return Math.max(Math.abs(x), Math.abs(y));
@@ -14,7 +14,6 @@ function getDistance(x, y)
 var AI_class = function()
 {
 	this.pointR  = 4;
-	this.notDraw = true;
 	this.notCalc = true;
 	this.cx      = 0;	// На чём мы остановили вычисления
 	this.cy      = 0;
@@ -52,7 +51,7 @@ function()
 		{
 			this.calcForPoint(X, Y);
 		}
-console.error(this.cy);
+
 		this.cy++;
 	}
 	loadProgressDiv.textContent = "Расчёт: " + Math.floor((this.cy * this.mx + this.cx) / CountOfPoints * 100) + "%";
@@ -63,6 +62,11 @@ console.error(this.cy);
 		this.cx = 0;
 
 		this.notCalc = false;
+
+		loadProgressDiv.textContent = "Отрисовка";
+		this.cleanCanvas();
+
+		setTimeout(this.draw.bind(this), 0);
 		return;
 	}
 
@@ -83,11 +87,18 @@ function(x, y)
 	var P = [];
 	var E = [];
 
+
+	for (var p1 of this.points[0])
+	for (var p2 of this.points[1])
+	{
+		getDistance(p1.x - p2.x, p1.y - p2.y);
+	}
+
 	var rc = 0xFF;
 	var gc = 0xFF;
 	var bc = 0xFF;
 
-	var obj = {E: 0, P: [0, 0], color: 'rgb(' + rc + ', ' + gc + ', ' + bc + ')'};
+	var obj = {E: 0, P: [0, 0], r: rc, g: gc, b: bc};
 	this.weights[y][x] = obj;
 };
 

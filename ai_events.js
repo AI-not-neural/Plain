@@ -43,12 +43,14 @@ function(e)
     var [x, y] = this.getTruthCoordinated(e.clientX, e.clientY);
     this.points[classOfPoint].push({x: x, y: y});
 
+    // Экономим, рисуем только точку, а не всё подряд
+    this.drawAllPoints();
+    loadProgressDiv.textContent = "Расчёт: 0%";
+
     this.cx = 0;
     this.cy = 0;
     this.notCalc = true;
     this.calc();
-
-    this.draw();
 };
 
 AI_class.prototype.onKeyDown =
