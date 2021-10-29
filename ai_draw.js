@@ -79,7 +79,7 @@ function()
         data[i]     = obj.r;     // red
         data[i + 1] = obj.g; // green
         data[i + 2] = obj.b; // blue
-        data[i + 3] = 0xFF;
+        data[i + 3] = 0x88;
 
         x++;
         if (x >= this.mx)

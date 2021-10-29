@@ -19,7 +19,7 @@ function(e)
     e.preventDefault();
     e.cancelBubble = true;
 
-    this.draw();
+    // this.draw();
 };
 
 AI_class.prototype.onWheel =
@@ -92,9 +92,9 @@ function(e)
         {
             e.preventDefault();
             e.cancelBubble = true;
-        }
 
-        this.draw();
+            this.draw();
+        }
     }
 };
 
@@ -127,31 +127,36 @@ function(e)
     console.error('F10 key pressed');
 };
 
+AI_class.prototype.key_Escape =
+function(e)
+{
+    this.points_init();
+};
 
 AI_class.prototype.onKeyDown_Compare =
-	function(e, key)
-	{
-		if (e.code != key[0])
-			return false;
+function(e, key)
+{
+    if (e.code != key[0])
+        return false;
 
-		var ctrl  = key[2];
-		var shift = key[3];
-		var alt   = key[4];
+    var ctrl  = key[2];
+    var shift = key[3];
+    var alt   = key[4];
 
-		if (ctrl === true || ctrl === false)
-		if (ctrl !== e.ctrlKey)
-			return false;
+    if (ctrl === true || ctrl === false)
+    if (ctrl !== e.ctrlKey)
+        return false;
 
-		if (shift === true || shift === false)
-		if (shift !== e.shiftKey)
-			return false;
+    if (shift === true || shift === false)
+    if (shift !== e.shiftKey)
+        return false;
 
-		if (alt === true || alt === false)
-		if (alt !== e.altKey)
-			return false;
+    if (alt === true || alt === false)
+    if (alt !== e.altKey)
+        return false;
 
-		return true;
-	};
+    return true;
+};
 
 
 AI_class.prototype.onKeyDown_Array =
