@@ -10,7 +10,7 @@ var CTX = main_canvas.getContext("2d");
 
 var loadProgressDiv = document.getElementById("loadProgress");
 var loadProgressInt = 0;
-var loadProgressMax = 3;
+var loadProgressMax = 4;
 var AI = null;
 
 

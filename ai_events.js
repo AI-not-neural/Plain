@@ -14,7 +14,7 @@ function()
 };
 
 AI_class.prototype.onClick =
-function()
+function(e)
 {
     e.preventDefault();
     e.cancelBubble = true;
@@ -29,10 +29,24 @@ function()
 };
 
 AI_class.prototype.onMouseDown =
-function()
+function(e)
 {
     e.preventDefault();
     e.cancelBubble = true;
+
+    // console.error(e);
+
+    var classOfPoint = e.button > 0 ? 1 : 0;
+    // if (e.altKey)
+    // classOfPoint += 3;
+
+    var [x, y] = this.getTruthCoordinated(e.clientX, e.clientY);
+    this.points[classOfPoint].push({x: x, y: y});
+
+    this.cx = 0;
+    this.cy = 0;
+    this.notCalc = true;
+    this.calc();
 
     this.draw();
 };
@@ -83,7 +97,7 @@ function(e)
 };
 
 AI_class.prototype.rightClick =
-function()
+function(e)
 {
     e.preventDefault();
     e.cancelBubble = true;
