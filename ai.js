@@ -39,20 +39,29 @@ function AIFunc2(p1, p2, x, y)
 
 	// var D   = getDistance(p2.x - p1.x, p2.y - p1.y);
 	var D = bn;
-	// var ed1 = getDistance(p1.x - x, p1.y - y);
-	// var ed2 = getDistance(p2.x - x, p2.y - y);
+	var ed1 = getDistance(p1.x - x, p1.y - y);
+	var ed2 = getDistance(p2.x - x, p2.y - y);
 
 	// Расстояние от точки до прямой
 	var dl = Math.abs(base_[1]*x - base_[0]*y + p2.x*p1.y - p2.y*p1.x) / D;
 
 	// ed1 = ed1*ed1 - d1*d1;
 	// ed2 = ed2*ed2 - d2*d2;
-	// var ed = Math.min(ed1, ed2);
+	var ed = Math.min(ed1, ed2);
 
 	// var ac = Math.acos(d1 / getDistance(s1[0], s1[1]));
 	// var dd = Math.pow(Math.abs(d1) + Math.abs(d2), 2);
 	//var kd = dd / (D*D);
-	var kd = dl * dl / (D*D);
+	
+	// Этот расчёт учитывает деление плоскости на две части
+	var kd = dl * dl / (D*D); //  * ed * ed
+	if (kd < 1)
+		kd = 1;
+
+	kd *= (D * D);
+	
+	// Этот расчёт позволяет выделять области
+	// var kd = ed*ed / (D*D);
 
 	// Это нужно закомментировать, потому что, по сути, решающее значение играет именно дистанция между двумя точками - чем они дальше, тем менее они друг с другом коррелируют и противоположны
 	// kd /= D * D;
