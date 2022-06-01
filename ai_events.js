@@ -109,7 +109,12 @@ function(e)
     var [x, y] = this.getTruthCoordinated(e.clientX, e.clientY);
 
     var w = this.weights[y][x];
-    loadProgressDiv.textContent = "Error: " + w.E.toPrecision(4) + "    P1: " + w.P[0].toPrecision(4) + "    P2: " + w.P[1].toPrecision(4);
+	
+	var str = "";
+	if (w.warn)
+		str = w.warn.toPrecision(4) + " x: " + x + " y: " + y;
+
+    loadProgressDiv.textContent = "Error: " + w.E.toPrecision(4) + "    P1: " + w.P[0].toPrecision(4) + "    P2: " + w.P[1].toPrecision(4) + "    warn: " + str;
 };
 
 

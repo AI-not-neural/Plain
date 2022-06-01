@@ -5,7 +5,11 @@ function AIFunc2(p1, p2, x, y)
 	var s1   = [p1.x - x, p1.y - y];
 	var s2   = [p2.x - x, p2.y - y];
 
-	var bn   = base[0] * base[0] + base[1] * base[1];
+	var base_ = [];
+	base_[0]  = base[0];
+	base_[1]  = base[1];
+
+	var bn   = getDistance(base[0], base[1]); //base[0] * base[0] + base[1] * base[1];
 	base[0] /= bn;
 	base[1] /= bn;
 
@@ -33,18 +37,28 @@ function AIFunc2(p1, p2, x, y)
 	var k2 = k2 / (k1 + k2);
 	// var Er = 1 - 1/(k1 + k2);
 
-	var D   = getDistance(p2.x - p1.x, p2.y - p1.y);
-	var ed1 = getDistance(p1.x - x, p1.y - y);
-	var ed2 = getDistance(p2.x - x, p2.y - y);
+	// var D   = getDistance(p2.x - p1.x, p2.y - p1.y);
+	var D = bn;
+	// var ed1 = getDistance(p1.x - x, p1.y - y);
+	// var ed2 = getDistance(p2.x - x, p2.y - y);
+
+	// Расстояние от точки до прямой
+	var dl = Math.abs(base_[1]*x - base_[0]*y + p2.x*p1.y - p2.y*p1.x) / D;
 
 	// ed1 = ed1*ed1 - d1*d1;
 	// ed2 = ed2*ed2 - d2*d2;
-	var ed = Math.min(ed1, ed2);
+	// var ed = Math.min(ed1, ed2);
 
-	var kd = ed * ed;
+	// var ac = Math.acos(d1 / getDistance(s1[0], s1[1]));
+	// var dd = Math.pow(Math.abs(d1) + Math.abs(d2), 2);
+	//var kd = dd / (D*D);
+	var kd = dl * dl / (D*D);
+
 	// Это нужно закомментировать, потому что, по сути, решающее значение играет именно дистанция между двумя точками - чем они дальше, тем менее они друг с другом коррелируют и противоположны
 	// kd /= D * D;
-	kd *= D * D;
+
+	// var kd = ed * ed;
+	// kd *= D * D;
 
 	return [k1, k2, kd];
 }
@@ -68,6 +82,7 @@ function getDistance(x, y)
 var AI_class = function()
 {
 	this.pointR  = 4;
+	this.drawedPercent = 0;
 	this.notCalc = true;
 	this.cx      = 0;	// На чём мы остановили вычисления
 	this.cy      = 0;
@@ -114,13 +129,15 @@ function()
 
 		this.cy++;
 	}
-	loadProgressDiv.textContent = "Расчёт: " + Math.floor((this.cy * this.mx + this.cx) / CountOfPoints * 100) + "%";
+	var percent = Math.floor((this.cy * this.mx + this.cx) / CountOfPoints * 100);
+	loadProgressDiv.textContent = "Расчёт: " + percent + "%";
 
 	if (this.cy >= this.my)
 	{
 		this.cy = 0;
 		this.cx = 0;
 
+		this.drawedPercent = 0;
 		this.notCalc = false;
 
 		loadProgressDiv.textContent = "Отрисовка";
@@ -129,7 +146,13 @@ function()
 		setTimeout(this.draw.bind(this), 0);
 		return;
 	}
-
+/*  Это не будет работать
+	if (percent - this.drawedPercent > 20)
+	{
+		this.drawedPercent = percent;
+		this.draw.bind(this);
+	}
+*/
 	// Продолжаем вычисления
 	setTimeout
 	(
@@ -150,11 +173,13 @@ function(x, y)
 
 	var L = Math.min(this.points[0].length, this.points[1].length);
 
+	var Err = 1e28;
 	for (var p1 of this.points[0])
 	for (var p2 of this.points[1])
 	{
 		var [k1, k2, Er] = AIFunc2(p1, p2, x, y);
 
+		Err = Er;
 		P1.push(k1);
 		P2.push(k2);
 		E .push(Er);
@@ -173,6 +198,8 @@ function(x, y)
 		}
 	}
 
+	var minKD = 1e28;
+	
 	var SP1 = 0;
 	var SP2 = 0;
 	var SES = 0;
@@ -185,6 +212,9 @@ function(x, y)
 		var ek = e2;
 		if (ek < 1 / P1.length)
 			ek = 1 / P1.length;
+
+		if (minKD > e2)
+			minKD = e2;
 
 		SP1 += P1[i] / ek;
 		SP2 += P2[i] / ek;
@@ -230,7 +260,7 @@ function(x, y)
 		bc = 255;
 	}
 
-	var obj = {E: SE, P: [SP1, SP2], r: rc, g: gc, b: bc};
+	var obj = {E: /* SE */ minKD, P: [SP1, SP2], r: rc, g: gc, b: bc, warn: Err};
 	this.weights[y][x] = obj;
 };
 

@@ -3,8 +3,8 @@ var main_canvas = document.getElementById("main");
 // Это нужно для того, чтобы можно было генерировать keydown на нажатых клавишах
 main_canvas.contentEditable = true;
 main_canvas.focus();
-main_canvas.width  = 1000;
-main_canvas.height = 1000;
+main_canvas.width  = window.innerWidth; // 1000;
+main_canvas.height = window.innerHeight; // 1000;
 
 var CTX = main_canvas.getContext("2d"); // , { alpha: false }
 
